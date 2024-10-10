@@ -17,8 +17,8 @@ setTimeout(function () {
     const value = override ? override.split(',') : []
     if (value.length > 0) {
 
-        var overrideButton = document.querySelector('[class*=ViaQuickActionsToolbar-root]')
-        if (!overrideButton) {
+        var headerElement = document.querySelector("#root header")
+        if (!headerElement) {
             return
         }
 
@@ -35,7 +35,7 @@ setTimeout(function () {
         overrideDiv.style.padding = '5px 10px';
         overrideDiv.style.zIndex = '1';
         overrideDiv.style.width = 'max-content';
-        overrideDiv.style.left = '250px';
+        overrideDiv.style.left = '315px';
 
         closeThisDiv.innerHTML = 'x'
         closeThisDiv.style.width = '16px'
@@ -60,8 +60,7 @@ setTimeout(function () {
         }).join('')
         overrideDiv.appendChild(closeThisDiv)
 
-
-        overrideButton.appendChild(overrideDiv)
+        headerElement.appendChild(overrideDiv)
     }
 }, 5000)
 
