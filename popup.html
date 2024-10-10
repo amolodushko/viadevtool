@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Via Remote Overrides manager</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .header label {
+            font-weight: bolder;
+        }
+
+        code {
+            padding: 3px 7px;
+        }
+
+        .field {
+            border: 1px solid #E8E9EB;
+            padding: 0 7px;
+            font-size: 14px;
+            box-sizing: unset;
+            min-height: 34px;
+            font-family: Inter, Heebo, Arial, "sans-serif";
+            font-weight: 400;
+            line-height: 20px;
+            text-shadow: none;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            color: #42474F;
+            width: 250px;
+        }
+
+        .field:hover {
+            box-shadow: 0 1px 2px rgb(21 22 26 / 5%);
+        }
+
+        [type="radio"] {
+            cursor: pointer;
+        }
+
+        form {
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            display: table;
+            table-layout: fixed;
+            margin: 20px;
+            text-align: left;
+        }
+
+        thead {
+            display: table-header-group;
+            color: #42474F;
+            font-size: 15px;
+            font-family: Inter, Open Sans, Arial, "sans-serif";
+            font-weight: 600;
+            line-height: 16px;
+        }
+
+        tr {
+            color: inherit;
+            display: table-row;
+            outline: 0;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: rgba(66, 71, 79, 0.05);
+            cursor: pointer;
+        }
+
+        th {
+            border-bottom: 2px solid rgb(232, 233, 235);
+            padding-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        td {
+            display: table-cell;
+            padding: 16px;
+            font-size: 0.875rem;
+            text-align: left;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            line-height: 1.43;
+            border-bottom: 1px solid rgba(224, 224, 224, 1);
+            letter-spacing: 0.01071em;
+            vertical-align: inherit;
+        }
+
+        .ViaBadge-warning-0-2-206 {
+            background-color: #FFF6E0;
+            height: 24px;
+            padding: 4px 8px;
+        }
+
+        .ViaBadge-root-0-2-189 {
+            gap: 4px;
+            width: max-content;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            border-radius: 4px;
+            color: #946300;
+        }
+
+        button {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .badge-y:not(:empty) {
+            background-color: #FFF6E0;
+            height: 24px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            border: 1px solid white;
+            color: #42474F;
+            cursor: text;
+        }
+
+        .badge-y:empty {
+            position: relative;
+            font-style: italic;
+            cursor: default;
+        }
+
+        .badge-y:empty:before {
+            content: "no overrides..."
+        }
+    </style>
+    <style data-jss="" data-meta="ViaButtonBase, Unthemed">
+        .voc-makeStyles-footer-301 {
+            gap: 12px;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            justify-content: flex-end;
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        .ViaButtonBase-root-0-2-135 {
+            gap: 6px;
+            font: inherit;
+            color: inherit;
+            border: solid 1px transparent;
+            cursor: pointer;
+            display: flex;
+            outline: inherit;
+            box-shadow: none;
+            box-sizing: border-box;
+            align-items: center;
+            border-radius: 8px;
+            text-transform: none;
+            justify-content: center;
+        }
+
+        .ViaButtonBase-root-0-2-135:disabled {
+            border: 1px solid transparent;
+        }
+
+        .ViaButtonBase-root-0-2-135, .ViaButtonBase-root-0-2-135 [class*="ViaTypography"] {
+            line-height: 20px;
+            letter-spacing: 0.02857em;
+        }
+
+        .ViaButtonBase-extraSmall-0-2-136 [class*="ViaSvgIcon"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .ViaButtonBase-large-0-2-150 {
+            padding-top: 7px;
+            padding-bottom: 7px;
+            padding-inline-end: 11px;
+            padding-inline-start: 11px;
+        }
+
+        .ViaButtonBase-large-0-2-150:focus-visible {
+            border: 2px solid #0069E2;
+            outline: 2px solid rgba(0, 105, 226, 0.12);
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-inline-end: 10px;
+            padding-inline-start: 10px;
+        }
+
+        .ViaButtonBase-animatedBackground-0-2-159 {
+            transition: background-color 0.15s;
+        }
+
+        .ViaButtonBase-animatedText-0-2-160 {
+            transition: color 0.15s ease-in-out;
+        }
+    </style>
+    <style data-jss="" data-meta="ViaButton, Unthemed">
+        .ViaButton-filled-primary-0-2-118 {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-filled-primary-0-2-118, .ViaButton-filled-primary-0-2-118 [class*="ViaSvgIcon"], .ViaButton-filled-primary-0-2-118 [class*="ViaTypography"], .ViaButton-filled-primary-0-2-118 [class*="MuiCircularProgress"], .ViaButton-filled-primary-0-2-118:disabled {
+            color: #FFFFFF;
+        }
+
+        .ViaButton-filled-primary-0-2-118:hover:not(:disabled), .ViaButton-filled-primary-0-2-118:focus-visible:not(:disabled) {
+            background-color: #0054B4;
+        }
+
+        .ViaButton-filled-primary-0-2-118.Via-Selected {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-filled-primary-0-2-118:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .ViaButton-filled-primary-0-2-118.Via-Selected:hover:not(:disabled), .ViaButton-filled-primary-0-2-118.Via-Selected:focus-visible:not(:disabled) {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124 {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124, .ViaButton-ghost-destructive-0-2-124 [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124 [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124 [class*="MuiCircularProgress"], .ViaButton-ghost-destructive-0-2-124:disabled {
+            color: #DA3939;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124.Via-Selected {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124.Via-Selected:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124.Via-Selected:focus-visible:not(:disabled) {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="MuiCircularProgress"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled), .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="MuiCircularProgress"] {
+            color: #A62B2B;
+        }
+    </style>
+
+    <style>
+        .ViaButton-filled-primary-0-2-118 {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-filled-primary-0-2-118, .ViaButton-filled-primary-0-2-118 [class*="ViaSvgIcon"], .ViaButton-filled-primary-0-2-118 [class*="ViaTypography"], .ViaButton-filled-primary-0-2-118 [class*="MuiCircularProgress"], .ViaButton-filled-primary-0-2-118:disabled {
+            color: #FFFFFF;
+        }
+
+        .ViaButton-filled-primary-0-2-118:hover:not(:disabled), .ViaButton-filled-primary-0-2-118:focus-visible:not(:disabled) {
+            background-color: #0054B4;
+        }
+
+        .ViaButton-filled-primary-0-2-118.Via-Selected {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-filled-primary-0-2-118:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .ViaButton-filled-primary-0-2-118.Via-Selected:hover:not(:disabled), .ViaButton-filled-primary-0-2-118.Via-Selected:focus-visible:not(:disabled) {
+            background-color: #0069E2;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124 {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124, .ViaButton-ghost-destructive-0-2-124 [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124 [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124 [class*="MuiCircularProgress"], .ViaButton-ghost-destructive-0-2-124:disabled {
+            color: #DA3939;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124.Via-Selected {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124.Via-Selected:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124.Via-Selected:focus-visible:not(:disabled) {
+            background-color: inherit;
+        }
+
+        .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled), .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124:hover:not(:disabled) [class*="MuiCircularProgress"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled), .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="ViaSvgIcon"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="ViaTypography"], .ViaButton-ghost-destructive-0-2-124:focus-visible:not(:disabled) [class*="MuiCircularProgress"] {
+            color: #A62B2B;
+        }
+
+        .actions_wp {
+            display: flex;
+            gap: 8px;
+            flex-direction: column
+        }
+
+        .full_actions {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .full_actions button {
+            font-size: 14px
+        }
+    </style>
+
+    <style>
+        svg:not([fill]) {
+            fill: currentColor;
+            height: 20px;
+            width: 20px;
+        }
+
+        #ViaQuickActionsToolbar {
+            color: #DA3939;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            background-color: #FFCCCC;
+            gap: 0 4px;
+            border: solid 1px transparent;
+            cursor: pointer;
+            outline: inherit;
+            box-shadow: none;
+            box-sizing: border-box;
+            border-radius: 8px;
+            text-transform: none;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        #ViaQuickActionsToolbar svg {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+        }
+
+        #ACTIVE_LOCAL_OVERRIDES {
+            padding-left: 80px;
+        }
+        #ACTIVE_LOCAL_OVERRIDES ul li{
+            list-style: none;
+            font-size: 14px;
+        }
+        .localstorage_override {
+            padding: 10px;
+            color: #946300;
+            font-weight: bolder;
+            display: inline-block;
+            min-width: 300px;
+            cursor: pointer;
+
+        }
+        .localstorage_override:hover {
+            text-decoration: underline;
+        }
+        .localstorage_override_value {
+            display: inline-block;
+            padding: 3px 10px;
+            color: #FFF6E0;
+            border-radius: 8px;
+            background: burlywood;
+        }
+
+        .localstorage_override_value.true {
+            background: forestgreen;
+        }
+        .localstorage_override_value.false {
+            background: #A62B2B;
+        }
+
+        .x_button {
+            border: none;
+            background: #E8E9EB;
+            color: #42474F;
+            border-radius: 18px;
+            padding: 3px 10px;
+            cursor: pointer;
+            margin: 0 15px;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif, system-ui;
+        }
+
+        .x_button:hover {
+            background: #b8b9bb;
+        }
+
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+<div style="min-width: 800px; width: 800px; height: 600px; overflow: auto">
+    <table style="min-width: 780px; width: 780px; overflow: hidden">
+        <thead class="voc-MuiTableHead-root-383">
+        <tr class="voc-MuiTableRow-root-384 HeaderRow-tableRow-0-2-262 voc-MuiTableRow-head-387">
+            <th style="width: 60px;"
+                class="voc-MuiTableCell-root-389 voc-MuiTableCell-head-390 HeaderCell-tableHeader-0-2-269" scope="col">
+                <div class="HeaderCell-tableCellContent-0-2-277 HeaderCell-tableCellContentLeft-0-2-279">
+                    <div class="" style="max-width: 100px;">
+                        <div class="HeaderCell-tableHeaderTextContainer-0-2-274">
+                            <div class="CellText-root-0-2-295">
+                                <div class="ViaTooltip-childrenContainer-0-2-99 CellText-text-0-2-296 CellText-bold-0-2-299">
+                                    App
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="HeaderCell-cellIcons-0-2-282"></div>
+                </div>
+            </th>
+            <th style="width: 270px;"
+                class="voc-MuiTableCell-root-389 voc-MuiTableCell-head-390 HeaderCell-tableHeader-0-2-269" scope="col">
+                <div class="HeaderCell-tableCellContent-0-2-277 HeaderCell-tableCellContentLeft-0-2-279">
+                    <div class="" style="max-width: 100%;">
+                        <div class="HeaderCell-tableHeaderTextContainer-0-2-274">
+                            <div class="CellText-root-0-2-295">
+                                <div class="ViaTooltip-childrenContainer-0-2-99 CellText-text-0-2-296 CellText-bold-0-2-299">
+                                    Current branch
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="HeaderCell-cellIcons-0-2-282"></div>
+                </div>
+            </th>
+            <th class="voc-MuiTableCell-root-389 voc-MuiTableCell-head-390 HeaderCell-tableHeader-0-2-269" scope="col">
+                <div class="HeaderCell-tableCellContent-0-2-277 HeaderCell-tableCellContentLeft-0-2-279">
+                    <div class="" style="max-width: 100%;">
+                        <div class="HeaderCell-tableHeaderTextContainer-0-2-274">
+                            <div class="CellText-root-0-2-295">
+                                <div class="ViaTooltip-childrenContainer-0-2-99 CellText-text-0-2-296 CellText-bold-0-2-299">
+                                    Override
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="HeaderCell-cellIcons-0-2-282"></div>
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="max-width: 100px;">SM</td>
+            <td>
+                <div id="SHIFT-MANAGER-VALUE" class="badge-y">
+
+                </div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="SM_RADIO_1" type="radio" name="SM_BRANCH" value="SM_BRANCH_1" checked/>
+                            <input data-attr-app="shift-manager@" id="SM_BRANCH_1" name="SM_BRANCH_VALUE_1"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="SM_RADIO_2" type="radio" name="SM_BRANCH" value="SM_BRANCH_2"/>
+                            <input data-attr-app="shift-manager@" id="SM_BRANCH_2" name="SM_BRANCH_VALUE_2"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY_SM"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply SM</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET_SM"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset SM</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="max-width: 100px;">RP</td>
+            <td>
+                <div id="RIDE-PLAN-VALUE" class="badge-y"></div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="RP_RADIO_1" type="radio" name="RP_BRANCH" value="RP_BRANCH_1" checked/>
+                            <input data-attr-app="ride-plan@" id="RP_BRANCH_1" name="RP_BRANCH_VALUE_1" class="field"
+                                   type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="RP_RADIO_2" type="radio" name="RP_BRANCH" value="RP_BRANCH_2"/>
+                            <input data-attr-app="ride-plan@" id="RP_BRANCH_2" name="RP_BRANCH_VALUE_2" class="field"
+                                   type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY_RP"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply RP</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET_RP"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset RP</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="max-width: 100px;">NEO</td>
+            <td>
+                <div id="VIA-HUB-DEV-VALUE" class="badge-y">
+
+                </div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="NEO_RADIO_1" type="radio" name="NEO_BRANCH" value="NEO_BRANCH_1" checked/>
+                            <input data-attr-app="via-hub-dev@" id="NEO_BRANCH_1" name="NEO_BRANCH_VALUE_1"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="NEO_RADIO_2" type="radio" name="NEO_BRANCH" value="NEO_BRANCH_2"/>
+                            <input data-attr-app="via-hub-dev@" id="NEO_BRANCH_2" name="NEO_BRANCH_VALUE_2"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY_NEO"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply NEO</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET_NEO"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button"><span style="font-size: 12px; font-weight: normal"
+                                                        class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset NEO</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <!--        -optimizer row-->
+        <tr>
+            <td style="max-width: 100px;">Optimizer</td>
+            <td>
+                <div id="RIDEPLAN-OPTIMIZER-VALUE" class="badge-y">
+
+                </div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="RIDEPLAN-OPTIMIZER_1" type="radio" name="RIDEPLAN-OPTIMIZER_BRANCH"
+                                   value="RIDEPLAN-OPTIMIZER_BRANCH_1" checked/>
+                            <input data-attr-app="rideplan-optimizer@" id="RIDEPLAN-OPTIMIZER_BRANCH_1"
+                                   name="NEO_BRANCH_VALUE_1"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="RIDEPLAN-OPTIMIZER_2" type="radio" name="RIDEPLAN-OPTIMIZER_BRANCH"
+                                   value="RIDEPLAN-OPTIMIZER_BRANCH_2"/>
+                            <input data-attr-app="rideplan-optimizer@" id="RIDEPLAN-OPTIMIZER_BRANCH_2"
+                                   name="NEO_BRANCH_VALUE_2"
+                                   list="INPUTS_LIST"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY_RIDEPLAN-OPTIMIZER"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply Optimizer</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET_RIDEPLAN-OPTIMIZER"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button"><span style="font-size: 12px; font-weight: normal"
+                                                        class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <!--        - voc hub row-->
+        <tr>
+            <td style="max-width: 100px;">VOCHub</td>
+            <td>
+                <div id="VOC-HUB-VALUE" class="badge-y">
+
+                </div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="VOC_HUB_1" type="radio" name="VOC_HUB_BRANCH"
+                                   value="VOC_HUB_BRANCH_1" checked/>
+                            <input data-attr-app="voc-hub@" id="VOC_HUB_BRANCH_1"
+                                   name="VOC_HUB_BRANCH_VALUE_1"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="VOC_HUB_2" type="radio" name="VOC_HUB_BRANCH"
+                                   value="VOC_HUB_BRANCH_2"/>
+                            <input data-attr-app="voc-hub@" id="VOC_HUB_BRANCH_2"
+                                   name="VOC_HUB_BRANCH_VALUE_2"
+                                   list="INPUTS_LIST"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY-VOC-HUB"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply Hub</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET-VOC-HUB"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button"><span style="font-size: 12px; font-weight: normal"
+                                                        class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <!--        - Rider management  row-->
+        <tr>
+            <td style="max-width: 100px;">RM</td>
+            <td>
+                <div id="RIDER-MANAGEMENT-VALUE" class="badge-y">
+
+                </div>
+            </td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="RM_1" type="radio" name="RM_BRANCH"
+                                   value="RM_BRANCH_1" checked/>
+                            <input data-attr-app="rider-management@" id="RM_BRANCH_1"
+                                   name="RM_BRANCH_VALUE_1"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   list="INPUTS_LIST"
+                                   autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="RM_2" type="radio" name="RM_BRANCH"
+                                   value="RM_BRANCH_2"/>
+                            <input data-attr-app="rider-management@" id="RM_BRANCH_2"
+                                   name="RM_BRANCH_VALUE_2"
+                                   list="INPUTS_LIST"
+                                   class="field" type="text" value="dev"
+                                   placeholder="Branch name..."
+                                   autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="APPLY-RM"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply RM</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="RESET-RM"
+                                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                                    type="button"><span style="font-size: 12px; font-weight: normal"
+                                                        class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <datalist id="INPUTS_LIST">
+        <option value="feat/release-v"/>
+        <option value="dev"/>
+        <option value="https://dev-local.voc.dev.ridewithvia.com/remoteEntry.js"/>
+    </datalist>
+
+    <div class="voc-makeStyles-footer-301">
+        <input list="ADD_LOCAL_NAME_LIST" data-attr-app="shift-manager@" id="ADD_LOCAL_NAME"
+               class="field" type="text"
+               autocomplete="local-storage-value"
+               placeholder="Storage key..."/>
+        <datalist id="ADD_LOCAL_NAME_LIST">
+            <option value="eng-36503:enable_v3"/>
+            <option value="eng-32321:enable_running_rideplan_with_bff"/>
+        </datalist>
+        <input data-attr-app="shift-manager@" list="ADD_LOCAL_VALUES_LIST" id="ADD_LOCAL_VALUE"
+               class="field" type="text"
+               placeholder="Storage value... keep empty to remove"
+               autocomplete="on"/>
+        <datalist id="ADD_LOCAL_VALUES_LIST">
+            <option value="true"/>
+            <option value="false"/>
+        </datalist>
+        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+            <button id="APPLY_LOCAL"
+                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                    type="button">
+                                <span style="font-size: 12px; font-weight: normal"
+                                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply Storage</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="ACTIVE_LOCAL_OVERRIDES"></div>
+
+    <div class="voc-makeStyles-footer-301">
+        <div style="display:flex; flex: 1;">
+            <button style="display: none" id="ViaQuickActionsToolbar" type="button">
+                <svg class="voc-MuiSvgIcon-root-72 ViaSvgIcon-root-0-2-5 ViaSvgIcon-root-d41-0-2-168 ViaSvgIcon-iconMedium-0-2-8"
+                     focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="voc-MuiSvgIcon-root-72 ViaSvgIcon-root-0-2-5 ViaSvgIcon-root-d42-0-2-169 ViaSvgIcon-iconMedium-0-2-8"
+                         focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5.373 3.207a3.57 3.57 0 0 1 4.562 4.565L21 18.836 18.835 21 7.771 9.937a3.57 3.57 0 0 1-4.563-4.565L5.49 7.655A1.53 1.53 0 1 0 7.653 5.49L5.372 3.206l.001.001ZM15.95 5.13l3.246-1.803 1.443 1.442-1.804 3.247-1.804.36-2.163 2.165-1.443-1.443 2.164-2.164.36-1.804Zm-7.214 7.936L10.9 15.23l-5.05 5.05a1.531 1.531 0 0 1-2.262-2.056l.099-.109 5.05-5.05h-.001Z"></path>
+                    </svg>
+                </svg>
+                <span>Open DevTools</span>
+            </button>
+        </div>
+
+        <span role="presentation"
+              class="ViaTypography-root-0-2-31 TextPreset-fontSize12-0-2-13 TextPreset-semiBold-0-2-19 ViaBadge-root-0-2-189 ViaBadge-regular-0-2-190 ViaBadge-warning-0-2-206">
+            <span class="ViaBadge-label-0-2-196"><span id="APPLIED_COUNT"> 0 </span> applied overrides</span>
+        </span>
+
+        <div style="display: flex; align-items: center; cursor: pointer">
+            <span class="voc-MuiSwitch-root-711 ViaSwitch-switchRoot-0-2-608 ViaSwitch-switchRootChecked-0-2-611">
+                <span class="voc-MuiButtonBase-root-202 voc-MuiIconButton-root-455 voc-PrivateSwitchBase-root-723 voc-MuiSwitch-switchBase-714 ViaSwitch-switchBase-0-2-614 voc-MuiSwitch-colorSecondary-716 voc-PrivateSwitchBase-checked-724 voc-MuiSwitch-checked-718"
+                      aria-disabled="false">
+                    <span class="voc-MuiIconButton-label-463">
+                        <input class="voc-PrivateSwitchBase-input-726 voc-MuiSwitch-input-720" type="checkbox"
+                               aria-label="Switch" aria-checked="true" value="" checked="" id="reloadCheckbox"/>
+                        <span class="voc-MuiSwitch-thumb-721 ViaSwitch-thumb-0-2-615"></span>
+                    </span>
+                </span>
+                <span class="voc-MuiSwitch-track-722 ViaSwitch-track-0-2-618 ViaSwitch-track-d1-0-2-628 ViaSwitch-trackChecked-0-2-620 ViaSwitch-trackChecked-d2-0-2-629"></span>
+            </span>
+            <label for="reloadCheckbox" style="cursor: pointer">Auto Reload</label>
+        </div>
+
+        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+            <button id="RESET_ALL"
+                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124"
+                    type="button">
+                <span style="font-size: 14px; font-weight: bolder"
+                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Reset All</span>
+            </button>
+        </div>
+        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+            <button id="APPLY_ALL"
+                    class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118"
+                    type="button">
+                <span style="font-size: 14px; font-weight: bolder"
+                      class="ViaTypography-root-0-2-31 TextPreset-fontSize14-0-2-14 TextPreset-semiBold-0-2-19 ViaButtonBase-animatedText-0-2-160">Apply All</span>
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
