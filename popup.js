@@ -98,6 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 },
                 function (results) {
+                    if (!wrapper) {
+                        return
+                    }
                     wrapper.innerHTML = JSON.stringify(results[0].result)
                     var list = results[0].result
 
@@ -168,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
             chrome.scripting.executeScript({
                     target: {tabId: activeTab.id},
                     args: [key],
-                    func: function (key, value) {
+                    func: function (key) {
                         localStorage.removeItem(key);
                     }
                 },
