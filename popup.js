@@ -668,5 +668,25 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ViaQuickActionsToolbar").addEventListener("click", oneDevTool);
     document.getElementById("APPLY_LOCAL").addEventListener("click", applyLocalStorageKeys);
 
+    // SETTINGS MODAL LOGIC
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const closeSettingsModal = document.getElementById('close-settings-modal');
+    const settingsAppList = document.getElementById('settings-app-list');
+
+    settingsBtn.addEventListener('click', function() {
+        // Render the list of apps with checkboxes
+        settingsAppList.innerHTML = APP_CONFIG.map(app => `
+            <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <input type="checkbox" checked />
+                <span>${app.label}</span>
+            </label>
+        `).join('');
+        settingsModal.style.display = 'flex';
+    });
+    closeSettingsModal.addEventListener('click', function() {
+        settingsModal.style.display = 'none';
+    });
+
     onActivate();
 });
