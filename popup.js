@@ -1,33 +1,165 @@
+const APP_CONFIG = [
+    
+    {
+        key: 'RP',
+        label: 'RP',
+        appAttr: 'ride-plan@',
+        valueId: 'RIDE-PLAN-VALUE',
+        branchRadioName: 'RP_BRANCH',
+        branches: [
+            { radioId: 'RP_RADIO_1', inputId: 'RP_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'RP_RADIO_2', inputId: 'RP_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY_RP',
+        resetBtnId: 'RESET_RP',
+        applyLabel: 'Apply RP',
+        resetLabel: 'Reset RP',
+        appPath: '/planning/ride-planner'
+    },
+    {
+        key: 'SM',
+        label: 'SM',
+        appAttr: 'shift-manager@',
+        valueId: 'SHIFT-MANAGER-VALUE',
+        branchRadioName: 'SM_BRANCH',
+        branches: [
+            { radioId: 'SM_RADIO_1', inputId: 'SM_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'SM_RADIO_2', inputId: 'SM_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY_SM',
+        resetBtnId: 'RESET_SM',
+        applyLabel: 'Apply SM',
+        resetLabel: 'Reset SM',
+        appPath: '/shift-manager'
+    },
+    {
+        key: 'NEO',
+        label: 'NEO',
+        appAttr: 'via-hub-dev@',
+        valueId: 'VIA-HUB-DEV-VALUE',
+        branchRadioName: 'NEO_BRANCH',
+        branches: [
+            { radioId: 'NEO_RADIO_1', inputId: 'NEO_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'NEO_RADIO_2', inputId: 'NEO_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY_NEO',
+        resetBtnId: 'RESET_NEO',
+        applyLabel: 'Apply NEO',
+        resetLabel: 'Reset NEO',
+        appPath: '/network-optimizer'
+    },
+    {
+        key: 'OPTIMIZER',
+        label: 'Optimizer',
+        appAttr: 'rideplan-optimizer@',
+        valueId: 'RIDEPLAN-OPTIMIZER-VALUE',
+        branchRadioName: 'RIDEPLAN-OPTIMIZER_BRANCH',
+        branches: [
+            { radioId: 'RIDEPLAN-OPTIMIZER_1', inputId: 'RIDEPLAN-OPTIMIZER_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'RIDEPLAN-OPTIMIZER_2', inputId: 'RIDEPLAN-OPTIMIZER_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY_RIDEPLAN-OPTIMIZER',
+        resetBtnId: 'RESET_RIDEPLAN-OPTIMIZER',
+        applyLabel: 'Apply Optimizer',
+        resetLabel: 'Reset',
+        appPath: '/rideplan-optimizer'
+    },
+    {
+        key: 'VOC_HUB',
+        label: 'VOCHub',
+        appAttr: 'voc-hub@',
+        valueId: 'VOC-HUB-VALUE',
+        branchRadioName: 'VOC_HUB_BRANCH',
+        branches: [
+            { radioId: 'VOC_HUB_1', inputId: 'VOC_HUB_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'VOC_HUB_2', inputId: 'VOC_HUB_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY-VOC-HUB',
+        resetBtnId: 'RESET-VOC-HUB',
+        applyLabel: 'Apply Hub',
+        resetLabel: 'Reset',
+        appPath: '/hub'
+    },
+    {
+        key: 'RM',
+        label: 'RM',
+        appAttr: 'rider-management@',
+        valueId: 'RIDER-MANAGEMENT-VALUE',
+        branchRadioName: 'RM_BRANCH',
+        branches: [
+            { radioId: 'RM_1', inputId: 'RM_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'RM_2', inputId: 'RM_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY-RM',
+        resetBtnId: 'RESET-RM',
+        applyLabel: 'Apply RM',
+        resetLabel: 'Reset',
+        appPath: '/rider-management'
+    }
+];
+
+function renderAppTypesTable() {
+    const container = document.getElementById('app-types-table');
+    if (!container) return;
+
+    let html = `<table style="min-width: 780px; width: 780px; overflow: hidden">
+        <thead>
+        <tr>
+            <th style="width: 60px;">App</th>
+            <th style="width: 270px;">Current branch</th>
+            <th>Override</th>
+        </tr>
+        </thead>
+        <tbody>`;
+
+    APP_CONFIG.forEach(app => {
+        html += `<tr>
+            <td style="max-width: 100px;">${app.label}</td>
+            <td><div id="${app.valueId}" class="badge-y"></div></td>
+            <td>
+                <div class="full_actions">
+                    <div class="actions_wp">
+                        <div style="display: flex; gap: 4px">
+                            <input id="${app.branches[0].radioId}" type="radio" name="${app.branchRadioName}" value="${app.branches[0].inputId}" ${app.branches[0].checked ? 'checked' : ''}/>
+                            <input data-attr-app="${app.appAttr}" id="${app.branches[0].inputId}" name="${app.branchRadioName}_VALUE_1" class="field" type="text" value="${app.branches[0].value}" placeholder="Branch name..." list="INPUTS_LIST" autocomplete="on"/>
+                        </div>
+                        <div style="display: flex; gap: 4px">
+                            <input id="${app.branches[1].radioId}" type="radio" name="${app.branchRadioName}" value="${app.branches[1].inputId}" ${app.branches[1].checked ? 'checked' : ''}/>
+                            <input data-attr-app="${app.appAttr}" id="${app.branches[1].inputId}" name="${app.branchRadioName}_VALUE_2" class="field" type="text" value="${app.branches[1].value}" placeholder="Branch name..." list="INPUTS_LIST" autocomplete="on"/>
+                        </div>
+                    </div>
+                    <div class="actions_wp">
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="${app.applyBtnId}" class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-filled-primary-0-2-118" type="button">
+                                <span style="font-size: 12px; font-weight: normal">${app.applyLabel}</span>
+                            </button>
+                        </div>
+                        <div class="ViaTooltip-childrenContainer-0-2-99 ViaButtonBase-wrapper-0-2-134">
+                            <button id="${app.resetBtnId}" class="ViaButtonBase-root-0-2-135 ViaButtonBase-large-0-2-150 ViaButtonBase-animatedBackground-0-2-159 ViaButton-ghost-destructive-0-2-124" type="button">
+                                <span style="font-size: 12px; font-weight: normal">${app.resetLabel}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    var branhces = [
-        'RP_BRANCH_1',
-        'RP_BRANCH_2',
-        'NEO_BRANCH_1',
-        'NEO_BRANCH_2',
-        'SM_BRANCH_1',
-        'SM_BRANCH_2',
-        'RIDEPLAN-OPTIMIZER_BRANCH_1',
-        'RIDEPLAN-OPTIMIZER_BRANCH_2',
-        'VOC_HUB_BRANCH_1',
-        'VOC_HUB_BRANCH_2',
-        'RM_BRANCH_1',
-        'RM_BRANCH_2',
-    ]
-    var branchesSelectNames = [
-        'NEO_BRANCH',
-        'SM_BRANCH',
-        'RP_BRANCH',
-        'RIDEPLAN-OPTIMIZER_BRANCH',
-        'VOC_HUB_BRANCH',
-        'RM_BRANCH'
-    ]
+    renderAppTypesTable();
+
+    const branhces = APP_CONFIG.flatMap(app => app.branches.map(branch => branch.inputId));
+    const branchesSelectNames = APP_CONFIG.map(app => app.branchRadioName);
 
     var remoteEntry = 'remoteEntry.js'
     var remotes = [
         'https://dev-local.voc.dev.ridewithvia.com:3000/remoteEntry.js',
         'https://dev-local.voc.dev.ridewithvia.com/remoteEntry.js'
     ]
-
 
     var updateCount = function (override) {
         var count = document.getElementById("APPLIED_COUNT")
@@ -504,8 +636,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
-    //Listeners
+    // Listeners for dynamic table elements
     branhces.forEach(function (name) {
         document.getElementById(name).addEventListener('change', storeFieldValue);
         document.getElementById(name).addEventListener('focus', onInputFocus);
@@ -522,7 +653,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('reloadCheckbox').addEventListener('change', storeCheckboxChecked);
     document.getElementById("RESET_ALL").addEventListener("click", resetAll);
     document.getElementById("APPLY_ALL").addEventListener("click", applyAllHandler);
-    document.getElementById("APPLY_NEO").addEventListener("click", () => applySpeciffic('NEO_BRANCH'));
     document.getElementById("APPLY_NEO").addEventListener("click", () => applySpeciffic('NEO_BRANCH'));
     document.getElementById("APPLY_RP").addEventListener("click", () => applySpeciffic('RP_BRANCH'));
     document.getElementById("APPLY_SM").addEventListener("click", () => applySpeciffic('SM_BRANCH'));
