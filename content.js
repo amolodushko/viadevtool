@@ -17,7 +17,7 @@ const APP_CONFIG = [
     { appAttr: 'ride-plan@', appPath: '/planning/ride-planner' },
     { appAttr: 'shift-manager@', appPath: '/shift-manager' },
     { appAttr: 'via-hub-dev@', appPath: '/network-optimizer' },
-    { appAttr: 'rideplan-optimizer@', appPath: '/rideplan-optimizer' },
+    { appAttr: 'rideplan-optimizer@', appPath: '/ride-plan-optimizer-iframe' },
     { appAttr: 'voc-hub@', appPath: '/hub' },
     { appAttr: 'rider-management@', appPath: '/rider-management' }
 ];
