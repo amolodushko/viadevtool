@@ -84,11 +84,55 @@ setTimeout(function () {
         });
 
         if (currentOverride) {
-            overrideDiv.innerHTML = `<div style="text-decoration: underline">${currentOverride}</div>`;
+            overrideDiv.innerHTML = `<div style=\"text-decoration: underline\">${currentOverride}</div>`;
         } else {
-            overrideDiv.innerHTML = `<div style="font-style: italic;">No override for this app</div>`;
+            overrideDiv.innerHTML = `<div style=\"font-style: italic;\">No override for this app</div>`;
         }
-        overrideDiv.innerHTML += `<div style="font-size: 12px; margin-top: 4px;">Other overrides: ${otherOverrides.length}</div>`;
+
+        // Tooltip for other overrides (CSS-only)
+        const otherCountDiv = document.createElement('div');
+        otherCountDiv.style.fontSize = '12px';
+        otherCountDiv.style.marginTop = '4px';
+        otherCountDiv.style.display = 'inline-block';
+        otherCountDiv.style.position = 'relative';
+        otherCountDiv.className = 'other-overrides-tooltip';
+        otherCountDiv.textContent = `Other overrides: ${otherOverrides.length}`;
+        if (otherOverrides.length > 0) {
+            // Use \A for line breaks in CSS content
+            otherCountDiv.setAttribute('data-tooltip', otherOverrides.join('\\A'));
+        }
+
+        // Inject CSS for tooltip if not already present
+        if (!document.getElementById('other-overrides-tooltip-style')) {
+            const style = document.createElement('style');
+            style.id = 'other-overrides-tooltip-style';
+            style.textContent = `
+.other-overrides-tooltip {
+  position: relative;
+  cursor: pointer;
+}
+.other-overrides-tooltip[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  white-space: pre-line;
+  position: absolute;
+  left: 185%;
+  top: 25%;
+  transform: translateX(-50%);
+  background:rgb(26, 25, 24);
+  color:rgb(255, 255, 255);
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 12px;
+  z-index: 9999;
+  min-width: 120px;
+  max-width: 300px;
+  pointer-events: none;
+}
+`;
+            document.head.appendChild(style);
+        }
+
+        overrideDiv.appendChild(otherCountDiv);
         overrideDiv.appendChild(closeThisDiv)
         headerElement.appendChild(overrideDiv)
     }
