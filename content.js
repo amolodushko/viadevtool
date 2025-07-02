@@ -12,11 +12,27 @@ for (var i = 0; i < value.length; i++) {
     console.log(`%cRemote override: ${key}`, 'color: green; font-weight: bold; font-size: 20px;');
 }
 
-setTimeout(function () {
-    const override = localStorage.getItem(key)
-    const value = override ? override.split(',') : []
-    if (value.length > 0) {
+// Minimal config for app path to appAttr mapping
+const APP_CONFIG = [
+    { appAttr: 'ride-plan@', appPath: '/planning/ride-planner' },
+    { appAttr: 'shift-manager@', appPath: '/shift-manager' },
+    { appAttr: 'via-hub-dev@', appPath: '/network-optimizer' },
+    { appAttr: 'rideplan-optimizer@', appPath: '/rideplan-optimizer' },
+    { appAttr: 'voc-hub@', appPath: '/hub' },
+    { appAttr: 'rider-management@', appPath: '/rider-management' }
+];
 
+function getCurrentAppAttr() {
+    const path = window.location.pathname;
+    const found = APP_CONFIG.find(cfg => path.startsWith(cfg.appPath));
+    return found ? found.appAttr : null;
+}
+
+setTimeout(function () {
+    const key = 'remoteOverrides';
+    const override = localStorage.getItem(key);
+    const value = override ? override.split(',') : [];
+    if (value.length > 0) {
         var headerElement = document.querySelector("#root header")
         if (!headerElement) {
             return
@@ -51,15 +67,29 @@ setTimeout(function () {
         closeThisDiv.style.padding = '0 1px'
         closeThisDiv.style.cursor = 'pointer';
 
-
         closeThisDiv.addEventListener('click', function () {
             overrideDiv.remove()
         })
-        overrideDiv.innerHTML = value.map(v => {
-            return `<div style="text-decoration: underline">${v}</div>`;
-        }).join('')
-        overrideDiv.appendChild(closeThisDiv)
 
+        // Find current app override
+        const currentAppAttr = getCurrentAppAttr();
+        let currentOverride = null;
+        let otherOverrides = [];
+        value.forEach(v => {
+            if (currentAppAttr && v.startsWith(currentAppAttr)) {
+                currentOverride = v;
+            } else if (v) {
+                otherOverrides.push(v);
+            }
+        });
+
+        if (currentOverride) {
+            overrideDiv.innerHTML = `<div style="text-decoration: underline">${currentOverride}</div>`;
+        } else {
+            overrideDiv.innerHTML = `<div style="font-style: italic;">No override for this app</div>`;
+        }
+        overrideDiv.innerHTML += `<div style="font-size: 12px; margin-top: 4px;">Other overrides: ${otherOverrides.length}</div>`;
+        overrideDiv.appendChild(closeThisDiv)
         headerElement.appendChild(overrideDiv)
     }
 }, 5000)
