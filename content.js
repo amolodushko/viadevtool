@@ -19,7 +19,8 @@ const APP_CONFIG = [
     { appAttr: 'via-hub-dev@', appPath: '/network-optimizer' },
     { appAttr: 'rideplan-optimizer@', appPath: '/ride-plan-optimizer-iframe' },
     { appAttr: 'voc-hub@', appPath: '/hub' },
-    { appAttr: 'rider-management@', appPath: '/rider-management' }
+    { appAttr: 'rider-management@', appPath: '/rider-management' },
+    { appAttr: 'configuration-service@', appPath: '/configuration-service' }
 ];
 
 function getCurrentAppAttr() {

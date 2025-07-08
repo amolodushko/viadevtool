@@ -1,5 +1,20 @@
 const APP_CONFIG = [
-    
+    {
+        key: 'CONFIGURATION-SERVICE',
+        label: 'Fx',
+        appAttr: 'configuration-service@',
+        valueId: 'CONFIGURATION-SERVICE-VALUE',
+        branchRadioName: 'CONFIGURATION-SERVICE_BRANCH',
+        branches: [
+            { radioId: 'CONFIGURATION-SERVICE_RADIO_1', inputId: 'CONFIGURATION-SERVICE_BRANCH_1', value: 'dev', checked: true },
+            { radioId: 'CONFIGURATION-SERVICE_RADIO_2', inputId: 'CONFIGURATION-SERVICE_BRANCH_2', value: 'dev', checked: false }
+        ],
+        applyBtnId: 'APPLY_FL',
+        resetBtnId: 'RESET_FL',
+        applyLabel: 'Apply Fx',
+        resetLabel: 'Reset Fx',
+        appPath: '/configuration-service'
+    },
     {
         key: 'RP',
         label: 'RP',
@@ -548,6 +563,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setDisplayValue('RIDEPLAN-OPTIMIZER-VALUE', null)
         setDisplayValue('VOC-HUB-VALUE', null)
         setDisplayValue('RIDER-MANAGEMENT-VALUE', null)
+        setDisplayValue('CONFIGURATION-SERVICE-VALUE', null)
         if (data) {
             const split = data.split(',');
             split.forEach(function (value) {
@@ -655,12 +671,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("APPLY_ALL").addEventListener("click", applyAllHandler);
     document.getElementById("APPLY_NEO").addEventListener("click", () => applySpeciffic('NEO_BRANCH'));
     document.getElementById("APPLY_RP").addEventListener("click", () => applySpeciffic('RP_BRANCH'));
+    document.getElementById("APPLY_FL").addEventListener("click", () => applySpeciffic('CONFIGURATION-SERVICE_BRANCH'));
     document.getElementById("APPLY_SM").addEventListener("click", () => applySpeciffic('SM_BRANCH'));
     document.getElementById("APPLY_RIDEPLAN-OPTIMIZER").addEventListener("click", () => applySpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
     document.getElementById("APPLY-VOC-HUB").addEventListener("click", () => applySpeciffic('VOC_HUB_BRANCH'));
     document.getElementById("APPLY-RM").addEventListener("click", () => applySpeciffic('RM_BRANCH'));
     document.getElementById("RESET_NEO").addEventListener("click", () => resetSpeciffic('NEO_BRANCH'));
     document.getElementById("RESET_RP").addEventListener("click", () => resetSpeciffic('RP_BRANCH'));
+    document.getElementById("RESET_FL").addEventListener("click", () => resetSpeciffic('CONFIGURATION-SERVICE_BRANCH'));
     document.getElementById("RESET_SM").addEventListener("click", () => resetSpeciffic('SM_BRANCH'));
     document.getElementById("RESET_RIDEPLAN-OPTIMIZER").addEventListener("click", () => resetSpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
     document.getElementById("RESET-VOC-HUB").addEventListener("click", () => resetSpeciffic('VOC_HUB_BRANCH'));
