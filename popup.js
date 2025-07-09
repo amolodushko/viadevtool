@@ -113,9 +113,12 @@ const APP_CONFIG = [
     }
 ];
 
-function renderAppTypesTable() {
+async function renderAppTypesTable() {
     const container = document.getElementById('app-types-table');
     if (!container) return;
+
+    // Get visible apps based on settings
+    const visibleApps = await getVisibleAppConfig();
 
     let html = `<table style="min-width: 780px; width: 780px; overflow: hidden">
         <thead>
@@ -128,7 +131,7 @@ function renderAppTypesTable() {
         <tbody>`;
 
     APP_CONFIG.forEach(app => {
-        html += `<tr>
+        html += `<tr id="${app.key}-row" style="display: ${visibleApps.includes(app) ? 'table-row' : 'none'}">
             <td style="max-width: 100px;">${app.label}</td>
             <td><div id="${app.valueId}" class="badge-y"></div></td>
             <td>
@@ -164,8 +167,31 @@ function renderAppTypesTable() {
     container.innerHTML = html;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    renderAppTypesTable();
+function getVisibleAppConfig() {
+    // Get visibility settings from chrome storage
+    return new Promise((resolve) => {
+        chrome.storage.local.get(['app_visibility_settings'], function(result) {
+            const visibilitySettings = result.app_visibility_settings || {};
+            
+            // If no settings are stored, all apps are visible by default
+            if (Object.keys(visibilitySettings).length === 0) {
+                resolve(APP_CONFIG);
+                return;
+            }
+            
+            // Filter APP_CONFIG based on visibility settings
+            const visibleApps = APP_CONFIG.filter(app => {
+                // If no setting exists for this app, it's visible by default
+                return visibilitySettings[app.key] !== false;
+            });
+            
+            resolve(visibleApps);
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+    await renderAppTypesTable();
 
     const branhces = APP_CONFIG.flatMap(app => app.branches.map(branch => branch.inputId));
     const branchesSelectNames = APP_CONFIG.map(app => app.branchRadioName);
@@ -652,39 +678,46 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Listeners for dynamic table elements
-    branhces.forEach(function (name) {
-        document.getElementById(name).addEventListener('change', storeFieldValue);
-        document.getElementById(name).addEventListener('focus', onInputFocus);
-    })
+    var initBranches = function () {
+// Listeners for dynamic table elements
+        branhces.forEach(function (name) {
+            document.getElementById(name).addEventListener('change', storeFieldValue);
+            document.getElementById(name).addEventListener('focus', onInputFocus);
+        })
 
-    branchesSelectNames.forEach(function (name) {
-        document.getElementsByName(name).forEach(function (radio) {
-            radio.addEventListener('change', event => {
-                chrome.storage.local.set({[name + '-selectedType']: event.target.value});
+        branchesSelectNames.forEach(function (name) {
+            document.getElementsByName(name).forEach(function (radio) {
+                radio.addEventListener('change', event => {
+                    chrome.storage.local.set({[name + '-selectedType']: event.target.value});
+                })
             })
         })
-    })
+    }
+    
+    var initListeners = function () {
+        document.getElementById('reloadCheckbox').addEventListener('change', storeCheckboxChecked);
+        document.getElementById("RESET_ALL").addEventListener("click", resetAll);
+        document.getElementById("APPLY_ALL").addEventListener("click", applyAllHandler);
+        document.getElementById("APPLY_NEO").addEventListener("click", () => applySpeciffic('NEO_BRANCH'));
+        document.getElementById("APPLY_RP").addEventListener("click", () => applySpeciffic('RP_BRANCH'));
+        document.getElementById("APPLY_FL").addEventListener("click", () => applySpeciffic('CONFIGURATION-SERVICE_BRANCH'));
+        document.getElementById("APPLY_SM").addEventListener("click", () => applySpeciffic('SM_BRANCH'));
+        document.getElementById("APPLY_RIDEPLAN-OPTIMIZER").addEventListener("click", () => applySpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
+        document.getElementById("APPLY-VOC-HUB").addEventListener("click", () => applySpeciffic('VOC_HUB_BRANCH'));
+        document.getElementById("APPLY-RM").addEventListener("click", () => applySpeciffic('RM_BRANCH'));
+        document.getElementById("RESET_NEO").addEventListener("click", () => resetSpeciffic('NEO_BRANCH'));
+        document.getElementById("RESET_RP").addEventListener("click", () => resetSpeciffic('RP_BRANCH'));
+        document.getElementById("RESET_FL").addEventListener("click", () => resetSpeciffic('CONFIGURATION-SERVICE_BRANCH'));
+        document.getElementById("RESET_SM").addEventListener("click", () => resetSpeciffic('SM_BRANCH'));
+        document.getElementById("RESET_RIDEPLAN-OPTIMIZER").addEventListener("click", () => resetSpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
+        document.getElementById("RESET-VOC-HUB").addEventListener("click", () => resetSpeciffic('VOC_HUB_BRANCH'));
+        document.getElementById("RESET-RM").addEventListener("click", () => resetSpeciffic('RM_BRANCH'));
+        document.getElementById("ViaQuickActionsToolbar").addEventListener("click", oneDevTool);
+        document.getElementById("APPLY_LOCAL").addEventListener("click", applyLocalStorageKeys);
+    }
 
-    document.getElementById('reloadCheckbox').addEventListener('change', storeCheckboxChecked);
-    document.getElementById("RESET_ALL").addEventListener("click", resetAll);
-    document.getElementById("APPLY_ALL").addEventListener("click", applyAllHandler);
-    document.getElementById("APPLY_NEO").addEventListener("click", () => applySpeciffic('NEO_BRANCH'));
-    document.getElementById("APPLY_RP").addEventListener("click", () => applySpeciffic('RP_BRANCH'));
-    document.getElementById("APPLY_FL").addEventListener("click", () => applySpeciffic('CONFIGURATION-SERVICE_BRANCH'));
-    document.getElementById("APPLY_SM").addEventListener("click", () => applySpeciffic('SM_BRANCH'));
-    document.getElementById("APPLY_RIDEPLAN-OPTIMIZER").addEventListener("click", () => applySpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
-    document.getElementById("APPLY-VOC-HUB").addEventListener("click", () => applySpeciffic('VOC_HUB_BRANCH'));
-    document.getElementById("APPLY-RM").addEventListener("click", () => applySpeciffic('RM_BRANCH'));
-    document.getElementById("RESET_NEO").addEventListener("click", () => resetSpeciffic('NEO_BRANCH'));
-    document.getElementById("RESET_RP").addEventListener("click", () => resetSpeciffic('RP_BRANCH'));
-    document.getElementById("RESET_FL").addEventListener("click", () => resetSpeciffic('CONFIGURATION-SERVICE_BRANCH'));
-    document.getElementById("RESET_SM").addEventListener("click", () => resetSpeciffic('SM_BRANCH'));
-    document.getElementById("RESET_RIDEPLAN-OPTIMIZER").addEventListener("click", () => resetSpeciffic('RIDEPLAN-OPTIMIZER_BRANCH'));
-    document.getElementById("RESET-VOC-HUB").addEventListener("click", () => resetSpeciffic('VOC_HUB_BRANCH'));
-    document.getElementById("RESET-RM").addEventListener("click", () => resetSpeciffic('RM_BRANCH'));
-    document.getElementById("ViaQuickActionsToolbar").addEventListener("click", oneDevTool);
-    document.getElementById("APPLY_LOCAL").addEventListener("click", applyLocalStorageKeys);
+    initBranches();
+    initListeners();
 
     // SETTINGS MODAL LOGIC
     const settingsBtn = document.getElementById('settings-btn');
@@ -693,15 +726,48 @@ document.addEventListener("DOMContentLoaded", function () {
     const settingsAppList = document.getElementById('settings-app-list');
 
     settingsBtn.addEventListener('click', function() {
-        // Render the list of apps with checkboxes
-        settingsAppList.innerHTML = APP_CONFIG.map(app => `
-            <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                <input type="checkbox" checked />
-                <span>${app.label}</span>
-            </label>
-        `).join('');
-        settingsModal.style.display = 'flex';
+        // Load current visibility settings and render the list of apps with checkboxes
+        chrome.storage.local.get(['app_visibility_settings'], function(result) {
+            const visibilitySettings = result.app_visibility_settings || {};
+            
+            settingsAppList.innerHTML = APP_CONFIG.map(app => {
+                const isVisible = visibilitySettings[app.key] !== false; // Default to true if not set
+                return `
+                    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <input type="checkbox" data-app-key="${app.key}" ${isVisible ? 'checked' : ''} />
+                        <span>${app.label}</span>
+                    </label>
+                `;
+            }).join('');
+            
+            // Add event listeners to checkboxes
+            const checkboxes = settingsAppList.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const appKey = this.getAttribute('data-app-key');
+                    const isVisible = this.checked;
+                    
+                    // Update visibility settings
+                    chrome.storage.local.get(['app_visibility_settings'], function(result) {
+                        const currentSettings = result.app_visibility_settings || {};
+                        currentSettings[appKey] = isVisible;
+                        
+                        chrome.storage.local.set({app_visibility_settings: currentSettings}, function() {
+                            console.log(appKey, isVisible);
+                            // hide/show the rows based on the visibility settings
+                            const rows = document.querySelectorAll(`#${appKey}-row`);
+                            rows.forEach(row => {
+                                row.style.display = isVisible ? 'table-row' : 'none';
+                            }); 
+                        });
+                    });
+                });
+            });
+            
+            settingsModal.style.display = 'flex';
+        });
     });
+    
     closeSettingsModal.addEventListener('click', function() {
         settingsModal.style.display = 'none';
     });
